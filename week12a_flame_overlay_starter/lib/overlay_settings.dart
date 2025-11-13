@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'game_provider.dart';
 
 Widget settingsOverlay(BuildContext context, game) {
+  final gameProvider = Provider.of<GameProvider>(context, listen: true);
   return Center(
     child: Container(
       width: 350,
@@ -27,13 +30,13 @@ Widget settingsOverlay(BuildContext context, game) {
               ),
               Expanded(
                 child: Slider(
-                  value: 100,
+                  value: gameProvider.musicVolume,
                   min: 0,
                   max: 100,
                   divisions: 5,
-                  label: "100",
+                  label: gameProvider.musicVolume.toStringAsFixed(1),
                   onChanged: (value) {
-                    // TODO: Connect to actual volume control
+                    gameProvider.setMusicVolume(value);
                   },
                 ),
               ),
@@ -49,13 +52,13 @@ Widget settingsOverlay(BuildContext context, game) {
               ),
               Expanded(
                 child: Slider(
-                  value: 100,
+                  value: gameProvider.sfxVolume,
                   min: 0,
                   max: 100,
                   divisions: 5,
-                  label: "100",
+                  label: gameProvider.sfxVolume.toStringAsFixed(1),
                   onChanged: (value) {
-                    // TODO: Connect to actual volume control
+                    gameProvider.setSfxVolume(value);
                   },
                 ),
               ),

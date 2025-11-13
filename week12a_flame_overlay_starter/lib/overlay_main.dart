@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'game_provider.dart';
 
 Widget mainOverlay(BuildContext context, game) {
+  final gameProvider = Provider.of<GameProvider>(context, listen: true);
   return Align(
     alignment: Alignment.topCenter,
     child: Container(
@@ -12,7 +15,7 @@ Widget mainOverlay(BuildContext context, game) {
         children: [
           Expanded(
             child: Text(
-              "Score: 0",
+              "Score: ${gameProvider.score}",
               style: TextStyle(color: Colors.white, fontSize: 30),
             ),
           ),

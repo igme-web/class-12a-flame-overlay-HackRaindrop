@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'asteroid.dart';
+import 'game_provider.dart';
 
 ///
 /// The Game!
@@ -19,7 +21,7 @@ import 'asteroid.dart';
 
 class OverlayTutorial extends FlameGame with TapCallbacks {
   final BuildContext context;
-
+  late final GameProvider gameProvider;
   OverlayTutorial(this.context);
 
   @override
@@ -27,9 +29,10 @@ class OverlayTutorial extends FlameGame with TapCallbacks {
 
   @override
   Future<void> onLoad() async {
-    await images.loadAll([
-      "asteroid.png",
-    ]);
+    gameProvider = Provider.of<GameProvider>(context, listen: true);
+    gameProvider.playBgm("audio/bgm.mp3");
+
+    await images.loadAll(["asteroid.png"]);
 
     for (int i = 0; i < 10; i++) {
       add(Asteroid());
@@ -39,5 +42,14 @@ class OverlayTutorial extends FlameGame with TapCallbacks {
   @override
   void onTapUp(TapUpEvent event) {
     super.onTapUp(event);
+
+    gameProvider.incrementScore(1);
+    gameProvider.playSfx("audio/laserShoot.wav");
+  }
+
+  @override
+  void onDispose() {
+    gameProvider.dispose();
+    super.onDispose();
   }
 }
