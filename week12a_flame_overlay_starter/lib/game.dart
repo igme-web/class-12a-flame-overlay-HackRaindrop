@@ -19,7 +19,8 @@ import 'game_provider.dart';
 /// - the game uses TapCallbacks to handle tap events. Nothing happens yet.
 ///
 
-class OverlayTutorial extends FlameGame with TapCallbacks {
+class OverlayTutorial extends FlameGame
+    with TapCallbacks, WidgetsBindingObserver {
   final BuildContext context;
   late final GameProvider gameProvider;
   OverlayTutorial(this.context);
@@ -40,6 +41,32 @@ class OverlayTutorial extends FlameGame with TapCallbacks {
   }
 
   @override
+  void onAttach() {
+    super.onAttach();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("Resumed");
+        resumeEngine();
+        gameProvider.musicPlayer.resume();
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+        print("Paused");
+        pauseEngine();
+        gameProvider.musicPlayer.pause();
+        break;
+    }
+  }
+
+  @override
   void onTapUp(TapUpEvent event) {
     super.onTapUp(event);
 
@@ -49,6 +76,9 @@ class OverlayTutorial extends FlameGame with TapCallbacks {
 
   @override
   void onDispose() {
+    print("Game disposed");
+    WidgetsBinding.instance.removeObserver(this);
+
     gameProvider.dispose();
     super.onDispose();
   }

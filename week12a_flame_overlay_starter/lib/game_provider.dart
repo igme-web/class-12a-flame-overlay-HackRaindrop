@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flame/game.dart';
 
 class GameProvider extends ChangeNotifier {
   // Private variables for settings
@@ -9,12 +10,15 @@ class GameProvider extends ChangeNotifier {
   int _lastScore = 0;
   bool _inGame = false;
 
+  FlameGame? _game;
+
   // Getters to access private variables
   double get musicVolume => _musicVolume;
   double get sfxVolume => _sfxVolume;
   int get score => _score;
   int get lastScore => _lastScore;
   bool get inGame => _inGame;
+  FlameGame? get game => _game;
 
   //Audio players
   AudioPlayer musicPlayer = AudioPlayer();
@@ -47,6 +51,10 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set game(FlameGame? value) {
+    _game = value;
+  }
+
   Future<void> playBgm(String url) async {
     musicPlayer.setAudioContext(audioContext);
     musicPlayer.setReleaseMode(ReleaseMode.loop);
@@ -59,6 +67,7 @@ class GameProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    print("Provider disposed");
     musicPlayer.dispose();
     sfxPlayer.dispose();
     super.dispose();
